@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,18 +29,18 @@ public class BookShopUnitWebTest {
   @Test
   public void getBookTest() throws Exception {
 
-    Book book_sample = new Book();
-    book_sample.setName("test");
-    book_sample.setYear(1962);
-    book_sample.setId(1);
-    book_sample.setNumberOfPages(435);
+    Book bookSample = new Book();
+    bookSample.setName("test");
+    bookSample.setYear(1962);
+    bookSample.setId(1);
+    bookSample.setNumberOfPages(435);
 
-    given(service.getEntity(book_sample.getId())).willReturn(book_sample);
+    given(service.getEntity(bookSample.getId())).willReturn(bookSample);
 
     mockMvc
             .perform(get("/book_shop/book/1").contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentTypeCompatibleWith(MediaTypes.HAL_JSON))
             .andExpect(jsonPath("$.name").value("test"))
             .andExpect(jsonPath("$.year").value(1962));
   }

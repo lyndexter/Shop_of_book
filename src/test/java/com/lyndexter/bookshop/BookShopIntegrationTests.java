@@ -4,10 +4,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
-
 
 import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -27,12 +27,12 @@ class BookShopIntegrationTests {
     mockMvc
         .perform(get("/book_shop/book/1").contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(content().contentTypeCompatibleWith(MediaTypes.HAL_JSON))
         .andExpect(jsonPath("$.name").value("Wrapsafe"));
   }
 
   @Test
-  public void postBookTest() throws Exception{
+  public void postBookTest() throws Exception {
     mockMvc
         .perform(
             post("/book_shop/book")
@@ -44,10 +44,7 @@ class BookShopIntegrationTests {
                         + "  \"year\": 1965\n"
                         + "}"))
         .andExpect(status().isCreated())
-        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
-//        .andExpect(jsonPath("$.name").value("Wrapsafe"));
+        .andExpect(content().contentTypeCompatibleWith(MediaTypes.HAL_JSON))
+        .andExpect(jsonPath("$.name").value("string"));
   }
-
-  @Test
-  void contextLoads() {}
 }

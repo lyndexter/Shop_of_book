@@ -1,6 +1,7 @@
 package com.lyndexter.bookshop;
 
 import com.lyndexter.bookshop.controllers.BookController;
+import com.lyndexter.bookshop.dto.BookDto;
 import com.lyndexter.bookshop.models.Book;
 import com.lyndexter.bookshop.services.implementations.BookService;
 import org.junit.Before;
@@ -18,25 +19,25 @@ public class BookShopUnitTests {
 
   @MockBean private BookService service;
 
-  private Book book_sample;
-
+  private Book bookSample;
 
   @Before
   public void setUp() {
-    book_sample = new Book();
-    book_sample.setName("test");
-    book_sample.setYear(1962);
-    book_sample.setId(1);
-    book_sample.setNumberOfPages(435);
+    bookSample = new Book();
+    bookSample.setName("test");
+    bookSample.setYear(1962);
+    bookSample.setId(1);
+    bookSample.setNumberOfPages(435);
 
-    when(service.getEntity(book_sample.getId())).thenReturn(book_sample);
+    when(service.getEntity(bookSample.getId())).thenReturn(bookSample);
   }
 
   @Test
   public void getBookTest() {
     BookController bookController = new BookController(service);
 
-    ResponseEntity<Book> found_book = bookController.getBook(book_sample.getId());
-    assertThat(found_book.getBody()).isEqualTo(book_sample);
+    ResponseEntity<BookDto> found_book = bookController.getBook(bookSample.getId());
+    BookDto bookDtoSample = bookController.createDto(bookSample);
+    assertThat(found_book.getBody()).isEqualTo(bookDtoSample);
   }
 }
