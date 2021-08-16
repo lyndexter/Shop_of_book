@@ -1,7 +1,7 @@
-package com.lyndexter.bookshop.controllers;
+package com.lyndexter.bookshop.controllers.hateoasImpl;
 
+import com.lyndexter.bookshop.controllers.ControllerWithDto;
 import com.lyndexter.bookshop.dto.AuthorDto;
-import com.lyndexter.bookshop.dto.BookDto;
 import com.lyndexter.bookshop.models.Author;
 import com.lyndexter.bookshop.services.implementations.AuthorService;
 import org.springframework.hateoas.Link;

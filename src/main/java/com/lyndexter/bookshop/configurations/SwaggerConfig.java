@@ -1,4 +1,4 @@
-package com.lyndexter.bookshop.swagger;
+package com.lyndexter.bookshop.configurations;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

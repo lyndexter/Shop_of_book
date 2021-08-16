@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Shop</title>
+</head>
+<body>
+<div th:switch="${books}">
+  <h2 th:case="null">No books yet!</h2>
+  <div th:case="*">
+    <h2>Books</h2>
+    <table>
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Year</th>
+        <th>Number of Pages</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="book : ${books}">
+        <td th:text="${book.name}"></td>
+        <td th:text="${book.year}"></td>
+        <td th:text="${book.numberOfPages}"></td>
+<!--        <td><a th:href="@{/edit/{id}(id=${user.id})}">Edit</a></td>-->
+<!--        <td><a th:href="@{/delete/{id}(id=${user.id})}">Delete</a></td>-->
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>

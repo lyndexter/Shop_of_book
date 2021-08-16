@@ -1,5 +1,6 @@
-package com.lyndexter.bookshop.controllers;
+package com.lyndexter.bookshop.controllers.hateoasImpl;
 
+import com.lyndexter.bookshop.controllers.ControllerWithDto;
 import com.lyndexter.bookshop.dto.BookDto;
 import com.lyndexter.bookshop.models.Book;
 import com.lyndexter.bookshop.services.implementations.BookService;

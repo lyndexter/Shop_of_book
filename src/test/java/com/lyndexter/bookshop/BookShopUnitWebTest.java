@@ -1,6 +1,6 @@
 package com.lyndexter.bookshop;
 
-import com.lyndexter.bookshop.controllers.BookController;
+import com.lyndexter.bookshop.controllers.hateoasImpl.BookController;
 import com.lyndexter.bookshop.models.Book;
 import com.lyndexter.bookshop.services.implementations.BookService;
 import org.junit.Test;

@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
 
 @ToString
 @Entity
-public class Book {
+public class Book implements Serializable {
   private int id;
   private String name;
   private Integer year;
