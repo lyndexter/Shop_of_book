@@ -3,6 +3,7 @@ package com.lyndexter.bookshop.services;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public abstract class ImplementedService<T, ID> implements DefaultService<T, ID> {
 
@@ -14,11 +15,16 @@ public abstract class ImplementedService<T, ID> implements DefaultService<T, ID>
 
   @Override
   public T getEntity(ID id) {
-    if (getRepository().existsById(id)) {
-      return getRepository().findById(id).get();
+    //    if (getRepository().existsById(id)) {
+    //      return getRepository().findById(id).get();
+    //    }
+    //    throwExeption();
+    //    return null;
+    Optional<T> optionalT = getRepository().findById(id);
+    if (optionalT.isEmpty()) {
+      throwExeption();
     }
-    throwExeption();
-    return null;
+    return optionalT.get();
   }
 
   @Override
