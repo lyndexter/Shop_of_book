@@ -1,15 +1,19 @@
 package com.lyndexter.bookshop.configurations;
 
 import com.lyndexter.bookshop.configurations.security.filters.JwtTokenFilter;
+import com.lyndexter.bookshop.exeptions.CustomAuthenticationEntryPoint;
 import com.lyndexter.bookshop.repositories.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,14 +28,24 @@ import static java.lang.String.format;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true, proxyTargetClass = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   private UserRepository userRepository;
   private final JwtTokenFilter jwtTokenFilter;
 
-  public SecurityConfig(UserRepository userRepository, JwtTokenFilter jwtTokenFilter) {
+  private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+  private final UserDetailsService userDetailsService;
+
+  public SecurityConfig(
+      UserRepository userRepository,
+      JwtTokenFilter jwtTokenFilter,
+      CustomAuthenticationEntryPoint customAuthenticationEntryPoint,
+      UserDetailsService userDetailsService) {
     this.userRepository = userRepository;
     this.jwtTokenFilter = jwtTokenFilter;
+    this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
+    this.userDetailsService = userDetailsService;
   }
 
   @Override
@@ -47,7 +61,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     //        .loginProcessingUrl("/login")
     //        .defaultSuccessUrl("/book_shop/view/home");
 
-    http = http.cors().and().csrf().disable();
     http =
         http.sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -58,6 +71,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                   response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
                 })
             .and();
+
     http.authorizeRequests()
         .antMatchers("/book_shop/view/home")
         .permitAll()
@@ -75,23 +89,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .permitAll()
         .anyRequest()
         .authenticated();
-
-    http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
   }
 
-  @Override
-  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    //    auth.inMemoryAuthentication()
-    //        .withUser("user")
-    //        .password(passwordEncoder().encode("1111"))
-    //        .roles("ADMIN");
-    auth.userDetailsService(
-        username ->
-            userRepository
-                .findByUsername(username)
-                .orElseThrow(
-                    () -> new UsernameNotFoundException(format("User: %s, not found", username))));
-  }
+  //  @Override
+  //  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+  //    //    auth.inMemoryAuthentication()
+  //    //        .withUser("user")
+  //    //        .password(passwordEncoder().encode("1111"))
+  //    //        .roles("ADMIN");
+  //    auth.userDetailsService(
+  //        username ->
+  //            userRepository
+  //                .findByUsername(username)
+  //                .orElseThrow(
+  //                    () -> new UsernameNotFoundException(format("User: %s, not found",
+  // username))));
+  //  }
 
   @Override
   @Bean
@@ -105,14 +118,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   }
 
   @Bean
-  public CorsFilter corsFilter() {
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowCredentials(true);
-    configuration.addAllowedOrigin("*");
-    configuration.addAllowedHeader("*");
-    configuration.addAllowedMethod("*");
-    source.registerCorsConfiguration("/**", configuration);
-    return new CorsFilter(source);
+  public DaoAuthenticationProvider authenticationProvider() {
+    DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+    provider.setPasswordEncoder(passwordEncoder());
+    provider.setUserDetailsService(userDetailsService);
+    return provider;
   }
 }
