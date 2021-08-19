@@ -47,17 +47,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     //        .loginProcessingUrl("/login")
     //        .defaultSuccessUrl("/book_shop/view/home");
 
-    http = http.cors().and().csrf().disable();
-    http =
-        http.sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-            .exceptionHandling()
-            .authenticationEntryPoint(
-                (request, response, ex) -> {
-                  response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
-                })
-            .and();
+//    http = http.cors().and().csrf().disable();
+    http = http.csrf().disable();
+//    http =
+//        http.sessionManagement()
+//            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//            .and();
+//            .exceptionHandling()
+//            .authenticationEntryPoint(
+//                (request, response, ex) -> {
+//                  response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
+//                })
+//            .and();
     http.authorizeRequests()
         .antMatchers("/book_shop/view/home")
         .permitAll()
@@ -74,9 +75,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers("/v2/api-docs/", "/v2/api-docs/**")
         .permitAll()
         .anyRequest()
-        .authenticated();
+        .authenticated().and().oauth2Login().permitAll();
 
-    http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+//    http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
   }
 
   @Override
@@ -85,12 +86,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     //        .withUser("user")
     //        .password(passwordEncoder().encode("1111"))
     //        .roles("ADMIN");
-    auth.userDetailsService(
-        username ->
-            userRepository
-                .findByUsername(username)
-                .orElseThrow(
-                    () -> new UsernameNotFoundException(format("User: %s, not found", username))));
+//    auth.userDetailsService(
+//        username ->
+//            userRepository
+//                .findByUsername(username)
+//                .orElseThrow(
+//                    () -> new UsernameNotFoundException(format("User: %s, not found", username))));
   }
 
   @Override
