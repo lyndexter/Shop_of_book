@@ -52,6 +52,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
+            .formLogin()
+            .loginPage("/book_shop/view/login")
+            .loginProcessingUrl("/login")
+            .defaultSuccessUrl("/book_shop/view/home")
+            .and()
             .exceptionHandling()
             .authenticationEntryPoint(
                 (request, response, ex) -> {
@@ -64,6 +69,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers("/book_shop/view/signup")
         .permitAll()
         .antMatchers("/book_shop/view/login")
+        .permitAll()
+        .antMatchers("/book_shop/view/authenticate")
         .permitAll()
         .antMatchers("/book_shop/view/users")
         .permitAll()
