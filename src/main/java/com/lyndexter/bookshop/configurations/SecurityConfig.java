@@ -18,10 +18,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import javax.servlet.http.HttpServletResponse;
-
-import static java.lang.String.format;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -36,29 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    //    http.authorizeRequests()
-    //        .antMatchers("/book_shop/view/books")
-    //        .hasRole("ADMIN")
-    //        .antMatchers("/", "/**")
-    //        .permitAll()
-    //        .and()
-    //        .formLogin()
-    //        .loginPage("/book_shop/view/login")
-    //        .loginProcessingUrl("/login")
-    //        .defaultSuccessUrl("/book_shop/view/home");
-
-//    http = http.cors().and().csrf().disable();
     http = http.csrf().disable();
-//    http =
-//        http.sessionManagement()
-//            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//            .and();
-//            .exceptionHandling()
-//            .authenticationEntryPoint(
-//                (request, response, ex) -> {
-//                  response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
-//                })
-//            .and();
     http.authorizeRequests()
         .antMatchers("/book_shop/view/home")
         .permitAll()
@@ -75,24 +49,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers("/v2/api-docs/", "/v2/api-docs/**")
         .permitAll()
         .anyRequest()
-        .authenticated().and().oauth2Login().permitAll();
+        .authenticated().and().oauth2Login();
+//    .loginPage("/book_shop/view/login");  -- adding costume login page
 
-//    http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
   }
 
-  @Override
-  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    //    auth.inMemoryAuthentication()
-    //        .withUser("user")
-    //        .password(passwordEncoder().encode("1111"))
-    //        .roles("ADMIN");
-//    auth.userDetailsService(
-//        username ->
-//            userRepository
-//                .findByUsername(username)
-//                .orElseThrow(
-//                    () -> new UsernameNotFoundException(format("User: %s, not found", username))));
-  }
 
   @Override
   @Bean
