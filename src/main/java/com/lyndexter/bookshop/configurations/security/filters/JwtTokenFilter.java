@@ -21,46 +21,42 @@ import static org.apache.logging.log4j.util.Strings.isEmpty;
 
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
-    private JwtTokenUtil jwtTokenUtil;
-    private UserRepository userRepository;
+  private final JwtTokenUtil jwtTokenUtil;
+  private final UserRepository userRepository;
 
-    public JwtTokenFilter(JwtTokenUtil jwtTokenUtil, UserRepository userRepository) {
-        this.jwtTokenUtil = jwtTokenUtil;
-        this.userRepository = userRepository;
+  public JwtTokenFilter(JwtTokenUtil jwtTokenUtil, UserRepository userRepository) {
+    this.jwtTokenUtil = jwtTokenUtil;
+    this.userRepository = userRepository;
+  }
+
+  @Override
+  protected void doFilterInternal(
+      HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+      throws ServletException, IOException {
+    final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+    if (isEmpty(header) || !header.startsWith("Bearer ")) {
+      chain.doFilter(request, response);
+      return;
     }
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (isEmpty(header) || !header.startsWith("Bearer ")) {
-            chain.doFilter(request, response);
-            return;
-        }
-
-        // Get jwt token and validate
-        final String token = header.split(" ")[1].trim();
-        if (!jwtTokenUtil.validate(token)) {
-            chain.doFilter(request, response);
-            return;
-        }
-
-        // Get user identity and set it on the spring security context
-        UserDetails userDetails = userRepository
-                .findByUsername(jwtTokenUtil.getUsername(token))
-                .orElse(null);
-
-        UsernamePasswordAuthenticationToken
-                authentication = new UsernamePasswordAuthenticationToken(
-                userDetails, null,
-                userDetails == null ?
-                        List.of() : userDetails.getAuthorities()
-        );
-
-        authentication.setDetails(
-                new WebAuthenticationDetailsSource().buildDetails(request)
-        );
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        chain.doFilter(request, response);
+    // Get jwt token and validate
+    final String token = header.split(" ")[1].trim();
+    if (!jwtTokenUtil.validate(token)) {
+      chain.doFilter(request, response);
+      return;
     }
+
+    // Get user identity and set it on the spring security context
+    UserDetails userDetails =
+        userRepository.findByUsername(jwtTokenUtil.getUsername(token)).orElse(null);
+
+    UsernamePasswordAuthenticationToken authentication =
+        new UsernamePasswordAuthenticationToken(
+            userDetails, null, userDetails == null ? List.of() : userDetails.getAuthorities());
+
+    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+    chain.doFilter(request, response);
+  }
 }

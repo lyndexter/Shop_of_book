@@ -1,12 +1,9 @@
 package com.lyndexter.bookshop.dto;
 
 import com.lyndexter.bookshop.models.Author;
-import com.lyndexter.bookshop.models.Book;
 import lombok.Data;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
-
-import java.util.Collection;
 
 @Data
 public class AuthorDto extends RepresentationModel<AuthorDto> {

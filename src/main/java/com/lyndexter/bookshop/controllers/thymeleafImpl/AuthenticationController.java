@@ -2,7 +2,6 @@ package com.lyndexter.bookshop.controllers.thymeleafImpl;
 
 import com.lyndexter.bookshop.configurations.security.JwtTokenUtil;
 import com.lyndexter.bookshop.dto.UserDto;
-import com.lyndexter.bookshop.exeptions.NotFoundEntityException;
 import com.lyndexter.bookshop.models.User;
 import com.lyndexter.bookshop.repositories.UserRepository;
 import io.swagger.annotations.Api;
@@ -55,7 +54,8 @@ public class AuthenticationController {
               "Bearer " + jwtTokenUtil.generateAccessToken(userAuthenticated))
           .body(userAuthenticated);
     } catch (BadCredentialsException ex) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Cant recognise user throw this credentials");
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+          .body("Cant recognise user throw this credentials");
     }
   }
 

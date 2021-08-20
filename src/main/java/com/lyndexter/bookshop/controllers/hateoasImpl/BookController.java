@@ -69,12 +69,10 @@ public class BookController implements ControllerWithDto<BookDto, Book> {
     Link link = linkTo(methodOn(BookController.class).getBooks()).withRel("list");
     List<BookDto> bookDtoList = new ArrayList<>();
     for (Book entBook : entities) {
-      Link selfLink =  Link.of(link.getHref() + "/" + entBook.getId());
+      Link selfLink = Link.of(link.getHref() + "/" + entBook.getId());
       BookDto bookDto = new BookDto(selfLink, entBook);
       bookDtoList.add(bookDto);
     }
     return bookDtoList;
   }
-
-
 }

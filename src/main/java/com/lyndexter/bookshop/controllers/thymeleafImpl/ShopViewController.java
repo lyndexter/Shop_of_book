@@ -8,9 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Slf4j
 @Controller
@@ -40,13 +39,6 @@ public class ShopViewController {
     return "login";
   }
 
-  //    @GetMapping("/{id}")
-  //    public ResponseEntity<BookDto> getBook(@PathVariable Integer id) {
-  //        Book book = bookService.getEntity(id);
-  //        BookDto bookDto = createDto(book);
-  //        return new ResponseEntity<>(bookDto, HttpStatus.OK);
-  //    }
-  //
   @GetMapping("books")
   public String showBooksPage(Model model) {
     model.addAttribute("books", bookService.getEntities());
@@ -59,25 +51,4 @@ public class ShopViewController {
 
     return new ResponseEntity<>(userRepository.findByUsername("user").get(), HttpStatus.OK);
   }
-
-  //    @PostMapping
-  //    public ResponseEntity<BookDto> createBook(@RequestBody Book book) {
-  //        book = bookService.createEntity(book);
-  //        BookDto bookDto = createDto(book);
-  //        return new ResponseEntity<>(bookDto, HttpStatus.CREATED);
-  //    }
-  //
-  //    @PutMapping("/{id}")
-  //    public ResponseEntity<BookDto> updateBook(@RequestBody Book book, @PathVariable Integer id)
-  // {
-  //        book = bookService.updateEntity(book, id);
-  //        BookDto bookDto = createDto(book);
-  //        return new ResponseEntity<>(bookDto, HttpStatus.OK);
-  //    }
-  //
-  //    @DeleteMapping("/{id}")
-  //    public ResponseEntity<BookDto> deleteBook(@PathVariable Integer id) {
-  //        bookService.deleteEntity(id);
-  //        return new ResponseEntity<>(HttpStatus.OK);
-  //    }
 }

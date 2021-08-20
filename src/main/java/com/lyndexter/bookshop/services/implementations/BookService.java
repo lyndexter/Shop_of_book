@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class BookService extends ImplementedService<Book, Integer> {
 
-  private JpaRepository<Book, Integer> bookRepository;
+  private final JpaRepository<Book, Integer> bookRepository;
 
   public BookService(BookRepository bookRepository) {
     this.bookRepository = bookRepository;
@@ -24,11 +24,11 @@ public class BookService extends ImplementedService<Book, Integer> {
   @Override
   protected Book changeEntity(Book changingEntity, Book entity) {
     changingEntity.setAuthor(
-            entity.getAuthor() != null ? entity.getAuthor() : changingEntity.getAuthor());
+        entity.getAuthor() != null ? entity.getAuthor() : changingEntity.getAuthor());
     changingEntity.setName(entity.getName() != null ? entity.getName() : changingEntity.getName());
     changingEntity.setYear(entity.getYear() != null ? entity.getYear() : changingEntity.getYear());
     changingEntity.setAuthor(
-            entity.getAuthor() != null ? entity.getAuthor() : changingEntity.getAuthor());
+        entity.getAuthor() != null ? entity.getAuthor() : changingEntity.getAuthor());
 
     return changingEntity;
   }

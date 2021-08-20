@@ -1,15 +1,10 @@
 package com.lyndexter.bookshop.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.lyndexter.bookshop.models.Author;
 import com.lyndexter.bookshop.models.Book;
-import com.lyndexter.bookshop.models.BookDetails;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.Link;
-
-import java.util.Collection;
+import org.springframework.hateoas.RepresentationModel;
 
 @Data
 @EqualsAndHashCode

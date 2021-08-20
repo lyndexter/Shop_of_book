@@ -3,7 +3,6 @@ package com.lyndexter.bookshop.configurations.security;
 import com.lyndexter.bookshop.models.User;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Component;
 
 import java.util.Date;

@@ -26,8 +26,8 @@ import static java.lang.String.format;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-  private UserRepository userRepository;
   private final JwtTokenFilter jwtTokenFilter;
+  private final UserRepository userRepository;
 
   public SecurityConfig(UserRepository userRepository, JwtTokenFilter jwtTokenFilter) {
     this.userRepository = userRepository;
@@ -36,26 +36,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    //    http.authorizeRequests()
-    //        .antMatchers("/book_shop/view/books")
-    //        .hasRole("ADMIN")
-    //        .antMatchers("/", "/**")
-    //        .permitAll()
-    //        .and()
-    //        .formLogin()
-    //        .loginPage("/book_shop/view/login")
-    //        .loginProcessingUrl("/login")
-    //        .defaultSuccessUrl("/book_shop/view/home");
 
     http = http.cors().and().csrf().disable();
     http =
         http.sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-            .formLogin()
-            .loginPage("/book_shop/view/login")
-            .loginProcessingUrl("/login")
-            .defaultSuccessUrl("/book_shop/view/home")
             .and()
             .exceptionHandling()
             .authenticationEntryPoint(
@@ -88,10 +73,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    //    auth.inMemoryAuthentication()
-    //        .withUser("user")
-    //        .password(passwordEncoder().encode("1111"))
-    //        .roles("ADMIN");
     auth.userDetailsService(
         username ->
             userRepository
