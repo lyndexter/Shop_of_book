@@ -9,45 +9,43 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-
-import javax.servlet.http.HttpServletResponse;
 
 import static java.lang.String.format;
 
 @Configuration
 @EnableWebSecurity
+@EnableResourceServer
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-  private final JwtTokenFilter jwtTokenFilter;
-  private final UserRepository userRepository;
-
-  public SecurityConfig(UserRepository userRepository, JwtTokenFilter jwtTokenFilter) {
-    this.userRepository = userRepository;
-    this.jwtTokenFilter = jwtTokenFilter;
-  }
+//  private final JwtTokenFilter jwtTokenFilter;
+//  private final UserRepository userRepository;
+//
+//  public SecurityConfig(UserRepository userRepository, JwtTokenFilter jwtTokenFilter) {
+//    this.userRepository = userRepository;
+//    this.jwtTokenFilter = jwtTokenFilter;
+//  }
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
 
-    http = http.cors().and().csrf().disable();
-    http =
-        http.sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-            .exceptionHandling()
-            .authenticationEntryPoint(
-                (request, response, ex) -> {
-                  response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
-                })
-            .and();
+    //    http = http.cors().and().csrf().disable();
+    //    http =
+    //        http.sessionManagement()
+    //            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+    //            .and()
+    //            .exceptionHandling()
+    //            .authenticationEntryPoint(
+    //                (request, response, ex) -> {
+    //                  response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
+    //                })
+    //            .and();
     http.authorizeRequests()
         .antMatchers("/book_shop/view/home")
         .permitAll()
@@ -65,42 +63,49 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .permitAll()
         .antMatchers("/v2/api-docs/", "/v2/api-docs/**")
         .permitAll()
+        .mvcMatchers("/book_shop/view/books")
+        .access("hasAuthority('cloud-platform')")
         .anyRequest()
         .authenticated();
-
-    http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+//        .and()
+//        .oauth2ResourceServer()
+//        .jwt();
+    ;
+    //        .and()
+    //        .oauth2ResourceServer(oauth2 -> oauth2.jwt());
+    //    http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
   }
 
-  @Override
-  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    auth.userDetailsService(
-        username ->
-            userRepository
-                .findByUsername(username)
-                .orElseThrow(
-                    () -> new UsernameNotFoundException(format("User: %s, not found", username))));
-  }
+//  @Override
+//  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//    auth.userDetailsService(
+//        username ->
+//            userRepository
+//                .findByUsername(username)
+//                .orElseThrow(
+//                    () -> new UsernameNotFoundException(format("User: %s, not found", username))));
+//  }
 
-  @Override
-  @Bean
-  public AuthenticationManager authenticationManagerBean() throws Exception {
-    return super.authenticationManagerBean();
-  }
+//  @Override
+//  @Bean
+//  public AuthenticationManager authenticationManagerBean() throws Exception {
+//    return super.authenticationManagerBean();
+//  }
+//
+//  @Bean
+//  public PasswordEncoder passwordEncoder() {
+//    return new BCryptPasswordEncoder();
+//  }
 
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
-
-  @Bean
-  public CorsFilter corsFilter() {
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowCredentials(true);
-    configuration.addAllowedOrigin("*");
-    configuration.addAllowedHeader("*");
-    configuration.addAllowedMethod("*");
-    source.registerCorsConfiguration("/**", configuration);
-    return new CorsFilter(source);
-  }
+//  @Bean
+//  public CorsFilter corsFilter() {
+//    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//    CorsConfiguration configuration = new CorsConfiguration();
+//    configuration.setAllowCredentials(true);
+//    configuration.addAllowedOrigin("*");
+//    configuration.addAllowedHeader("*");
+//    configuration.addAllowedMethod("*");
+//    source.registerCorsConfiguration("/**", configuration);
+//    return new CorsFilter(source);
+//  }
 }
